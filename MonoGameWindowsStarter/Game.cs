@@ -1,18 +1,28 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonoGameWindowsStarter
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Game : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont spriteFont;
+        Random random = new Random();
 
-        public Game1()
+        SpriteSheet spriteSheet;
+        List<Platform> platforms;
+        Player player;
+        KeyboardState oldKeyboardState;
+
+        public Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -27,8 +37,12 @@ namespace MonoGameWindowsStarter
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            graphics.PreferredBackBufferWidth = 1042;
+            graphics.PreferredBackBufferHeight = 768;
 
             base.Initialize();
+
+
         }
 
         /// <summary>
@@ -39,6 +53,15 @@ namespace MonoGameWindowsStarter
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            spriteFont = Content.Load<SpriteFont>("Font");
+            spriteSheet = new SpriteSheet(Content.Load<Texture2D>("spritesheet"), 21, 21, 2, 2);
+            
+            player = new Player(this, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight + 21));
+            player.LoadContent(spriteSheet);
+
+
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -59,11 +82,19 @@ namespace MonoGameWindowsStarter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            var newKeyboardState = Keyboard.GetState();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            player.Update(gameTime);
+
             // TODO: Add your update logic here
 
+            oldKeyboardState = newKeyboardState;
             base.Update(gameTime);
         }
 
@@ -76,8 +107,17 @@ namespace MonoGameWindowsStarter
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            player.Draw(spriteBatch);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+        //public List<Platform> InitilizePlatforms(SpriteSheet spriteSheet)
+        //{
+            //return [new Platform]
+        //}
     }
 }
