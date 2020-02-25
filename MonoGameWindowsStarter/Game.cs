@@ -15,7 +15,7 @@ namespace MonoGameWindowsStarter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont spriteFont;
-        Random random = new Random();
+        Random random;
 
         SpriteSheet spriteSheet;
         List<Platform> platforms;
@@ -40,6 +40,9 @@ namespace MonoGameWindowsStarter
             graphics.PreferredBackBufferWidth = 1042;
             graphics.PreferredBackBufferHeight = 768;
 
+            random = new Random();
+            platforms = new List<Platform>();
+
             base.Initialize();
 
 
@@ -51,14 +54,25 @@ namespace MonoGameWindowsStarter
         /// </summary>
         protected override void LoadContent()
         {
+#if VISUAL_DEBUG
+            VisualDebugging.LoadContent(Content);
+#endif
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>("Font");
             spriteSheet = new SpriteSheet(Content.Load<Texture2D>("spritesheet"), 21, 21, 2, 2);
             
-            player = new Player(this, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight + 21));
+            player = new Player(this, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight/2 + 21));
             player.LoadContent(spriteSheet);
+
+            platforms.Add(new Platform(this, Orentation.Flat, 5, new Vector2(100, 100)));
+            foreach(Platform platform in platforms)
+            {
+                platform.LoadContent(spriteSheet);
+            }
+
+
 
 
 
@@ -90,7 +104,7 @@ namespace MonoGameWindowsStarter
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.Update(gameTime);
+            player.Update(gameTime, platforms);
 
             // TODO: Add your update logic here
 
@@ -109,6 +123,10 @@ namespace MonoGameWindowsStarter
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             player.Draw(spriteBatch);
+            foreach(Platform platform in platforms)
+            {
+                platform.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
 
@@ -119,5 +137,10 @@ namespace MonoGameWindowsStarter
         //{
             //return [new Platform]
         //}
+
+        public void manageCollisions()
+        {
+            player.manageCollisions(platforms);
+        }
     }
 }

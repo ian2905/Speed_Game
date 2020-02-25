@@ -40,9 +40,22 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'VISUAL_DEBUG|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\VISUAL_DEBUG\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;VISUAL_DEBUG WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="BoundingCircle.cs" />
     <Compile Include="BoundingRectangle.cs" />
+    <Compile Include="Jumping.cs" />
+    <Compile Include="PlayerState.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
@@ -50,6 +63,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="SpriteSheet.cs" />
+    <Compile Include="Standing.cs" />
+    <Compile Include="VisualDebugging.cs" />
+    <Compile Include="Walking.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -103,5 +103,10 @@ namespace MonoGameWindowsStarter
         {
             spriteBatch.Draw(texture, position, source, color, rotation, origin, scale, effects, layerDepth);
         }
+
+        public Texture2D getSprite()
+        {
+            return texture;
+        }
     }
 }
