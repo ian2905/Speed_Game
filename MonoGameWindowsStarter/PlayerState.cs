@@ -11,7 +11,7 @@ namespace MonoGameWindowsStarter
 {
     public interface PlayerState
     {
-        void Update(Player player, GameTime gameTime, List<Platform> platforms);
+        void Update(Player player, GameTime gameTime, BoundingRectangle[] platforms);
         void Draw(Player p, SpriteBatch spriteBatch);
 
 

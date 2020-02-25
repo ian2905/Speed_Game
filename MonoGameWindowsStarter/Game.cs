@@ -104,7 +104,12 @@ namespace MonoGameWindowsStarter
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.Update(gameTime, platforms);
+            BoundingRectangle[] temp = new BoundingRectangle[platforms.Count];
+            for(int i = 0; i < platforms.Count; i++)
+            {
+                temp[i] = platforms[i].bounds;
+            }
+            player.Update(gameTime, temp);
 
             // TODO: Add your update logic here
 
@@ -137,10 +142,5 @@ namespace MonoGameWindowsStarter
         //{
             //return [new Platform]
         //}
-
-        public void manageCollisions()
-        {
-            player.manageCollisions(platforms);
-        }
     }
 }

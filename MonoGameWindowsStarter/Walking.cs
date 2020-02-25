@@ -13,11 +13,11 @@ namespace MonoGameWindowsStarter
 {
     public class Walking : PlayerState
     {
-        public void Update(Player p, GameTime gameTime, List<Platform> platforms)
+        public void Update(Player p, GameTime gameTime, BoundingRectangle[] platforms)
         {
             var keyboardState = Keyboard.GetState();
-
-            if (p.velocity.X < Math.Abs(Player.SPEEDCAP))
+            
+            if (p.velocity.X < Math.Abs(Player.SPEEDCAP) && !p.sliding)
             {
                 if (keyboardState.IsKeyDown(Keys.D))
                 {
@@ -25,14 +25,14 @@ namespace MonoGameWindowsStarter
                 }
                 if (keyboardState.IsKeyDown(Keys.A))
                 {
-                    p.state = Player.jumpState;
                     p.velocity.X -= Player.ACCELERATION * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 }
             }
+
             if (keyboardState.IsKeyDown(Keys.W))
             {
-
-                p.velocity.Y -= Player.ACCELERATION * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                p.state = Player.jumpState;
+                p.velocity.Y -= Player.JUMP_ACCELERATION;
             }
 
             if (keyboardState.IsKeyDown(Keys.S))
@@ -52,6 +52,28 @@ namespace MonoGameWindowsStarter
             if(p.sliding == true && !keyboardState.IsKeyDown(Keys.S))
             {
                 p.sliding = false;
+            }
+
+            //Player Restrictions
+            if (p.bounds.X < 0)
+            {
+                p.velocity.X = 0;
+                p.bounds.X = 0;
+            }
+            if (p.bounds.X > p.game.GraphicsDevice.Viewport.Width - p.bounds.Width)
+            {
+                p.velocity.X = 0;
+                p.bounds.X = p.game.GraphicsDevice.Viewport.Width - p.bounds.Width;
+            }
+            if (p.bounds.Y < 0)
+            {
+                p.velocity.Y = 0;
+                p.bounds.Y = 0;
+            }
+            if (p.bounds.Y > p.game.GraphicsDevice.Viewport.Height - p.bounds.Height)
+            {
+                p.velocity.Y = 0;
+                p.bounds.Y = p.game.GraphicsDevice.Viewport.Height - p.bounds.Height;
             }
 
 
@@ -100,11 +122,14 @@ namespace MonoGameWindowsStarter
                 p.bounds.Width = Player.WALKING_SIZE.X;
                 p.bounds.Height = Player.WALKING_SIZE.Y;
             }
+            p.bounds.Y += (int)p.velocity.Y;
+            p.bounds.X += (int)p.velocity.X;
+
             ManageCollisions(p, platforms);
 
         }
 
-        private void Draw(Player p, SpriteBatch spriteBatch)
+        public void Draw(Player p, SpriteBatch spriteBatch)
         {
             SpriteEffects s;
             if (p.orentation == Facing.Right)
@@ -125,13 +150,13 @@ namespace MonoGameWindowsStarter
             }
         }
 
-        private void ManageCollisions(Player p, List<Platform> platforms)
+        private void ManageCollisions(Player p, BoundingRectangle[] platforms)
         {
-            foreach (Platform plat in platforms)
+            foreach (BoundingRectangle plat in platforms)
             {
-                if (p.bounds.CollidesWith(plat.bounds))
+                if (p.bounds.CollidesWith(plat))
                 {
-                    p.bounds.Y = plat.bounds.Y - p.bounds.Height;
+                    p.bounds.Y = plat.Y - p.bounds.Height;
                 }
             }
         }

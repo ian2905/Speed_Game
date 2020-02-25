@@ -20,13 +20,13 @@ namespace MonoGameWindowsStarter
     public class Player
     {
         public static float FRICTION = (float).5;
-        public static float GRAVITY = (float)1;
+        public static float GRAVITY = (float).5;
         public static float ACCELERATION = (float).05;
-        public static float JUMP_ACCELERATION = (float)2;
+        public static float JUMP_ACCELERATION = (float)15;
         public static int SPEEDCAP = 40;
         public static int ANIMATION_FRAME_RATE = 124;
-        public static Vector2 WALKING_SIZE = new Vector2(18, 22);
-        public static Vector2 SLIDING_SIZE = new Vector2(18, 16);
+        public static Vector2 WALKING_SIZE = new Vector2(36, 44); //18, 22
+        public static Vector2 SLIDING_SIZE = new Vector2(36, 32); //18, 16
 
         public static Standing standState = new Standing();
         public static Walking walkState = new Walking();
@@ -48,8 +48,8 @@ namespace MonoGameWindowsStarter
 
         public bool sliding = false;
 
-        public Rectangle walkingDraw => new Rectangle((int)bounds.X, (int)bounds.Y, (int)(2 * WALKING_SIZE.X), (int)(2*WALKING_SIZE.Y));
-        public Rectangle slidingDraw => new Rectangle((int)bounds.X, (int)bounds.Y, (int)(2 * SLIDING_SIZE.X), (int)(2 * SLIDING_SIZE.Y));
+        public Rectangle walkingDraw => new Rectangle((int)bounds.X, (int)bounds.Y, (int)(WALKING_SIZE.X), (int)(WALKING_SIZE.Y));
+        public Rectangle slidingDraw => new Rectangle((int)bounds.X, (int)bounds.Y, (int)(SLIDING_SIZE.X), (int)(SLIDING_SIZE.Y));
 
         public Player(Game game, Vector2 position)
         {
@@ -65,15 +65,16 @@ namespace MonoGameWindowsStarter
             }
         }
 
-        public void Update(GameTime gameTime, List<Platform> platforms)
+        public void Update(GameTime gameTime, BoundingRectangle[] platforms)
         {
             state.Update(this, gameTime, platforms);
+            //Console.WriteLine(state);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
 #if VISUAL_DEBUG
-            VisualDebugging.DrawRectangle(spriteBatch, new Rectangle((int)origin.X, (int)origin.Y, (int)WALKING_SIZE.X, (int)WALKING_SIZE.Y), Color.Red);
+            VisualDebugging.DrawRectangle(spriteBatch, bounds, Color.Red);
 #endif
             state.Draw(this, spriteBatch);
         }
