@@ -7,6 +7,15 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGameWindowsStarter
 {
+    public enum BoxSideHit
+    {
+        Top,
+        Right,
+        Bottom,
+        Left,
+        Null
+        
+    }
     public struct BoundingRectangle
     {
         public float X;
@@ -22,12 +31,45 @@ namespace MonoGameWindowsStarter
             this.Height = height;
         }
 
-        public bool CollidesWith(BoundingRectangle other)
+        public BoxSideHit CollidesWith(BoundingRectangle other)
         {
+            if(!(this.X > other.X + other.Width
+                  || this.X + this.Width < other.X
+                  || this.Y > other.Y + other.Height
+                  || this.Y + this.Height < other.Y))
+            {
+                float dTop = Math.Abs((this.Y + this.Height) - other.Y);
+                float dRight = Math.Abs(this.X - (other.X + other.Width));
+                float dBottom = Math.Abs(this.Y - (other.Y + other.Height));
+                float dLeft = Math.Abs((this.X + this.Width) - other.X);
+
+                if(dTop < Math.Min(dRight, Math.Min(dBottom, dLeft)))
+                {
+                    return BoxSideHit.Top;
+                }
+                else if(dRight < Math.Min(dBottom, dLeft))
+                {
+                    return BoxSideHit.Right;
+                }
+                else if (dBottom < dLeft)
+                {
+                    return BoxSideHit.Bottom;
+                }
+                else
+                {
+                    return BoxSideHit.Left;
+                }
+            }
+            else
+            {
+                return BoxSideHit.Null;
+            }
+            /*
             return !(this.X > other.X + other.Width
                   || this.X + this.Width < other.X
                   || this.Y > other.Y + other.Height
                   || this.Y + this.Height < other.Y);
+                  */
         }
 
         public bool CollidesWith(BoundingCircle other)

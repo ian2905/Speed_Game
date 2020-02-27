@@ -157,10 +157,26 @@ namespace MonoGameWindowsStarter
         {
             foreach (BoundingRectangle plat in platforms)
             {
-                if (p.bounds.CollidesWith(plat))
+                BoxSideHit side = p.bounds.CollidesWith(plat);
+                if (side == BoxSideHit.Top)
                 {
                     p.bounds.Y = plat.Y - p.bounds.Height;
                     p.velocity.Y = 0;
+                }
+                else if (side == BoxSideHit.Right)
+                {
+                    p.bounds.X = plat.X + plat.Width;
+                    p.velocity.X = 0;
+                }
+                else if (side == BoxSideHit.Bottom)
+                {
+                    p.bounds.Y = plat.Y + plat.Height;
+                    p.velocity.Y = 0;
+                }
+                else if (side == BoxSideHit.Left)
+                {
+                    p.bounds.X = plat.X - p.bounds.Width;
+                    p.velocity.X = 0;
                 }
             }
         }

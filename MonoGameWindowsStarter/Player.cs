@@ -20,10 +20,10 @@ namespace MonoGameWindowsStarter
     public class Player
     {
         public static float FRICTION = (float).5;
-        public static float GRAVITY = (float)1;
+        public static float GRAVITY = (float)1.5;
         public static float ACCELERATION = (float).05;
-        public static float JUMP_ACCELERATION = (float).5;
-        public static int SPEEDCAP = 40;
+        public static float JUMP_ACCELERATION = (float).2;
+        public static int SPEEDCAP = 30;
         public static int ANIMATION_FRAME_RATE = 124;
         public static Vector2 WALKING_SIZE = new Vector2(36, 44); //18, 22
         public static Vector2 SLIDING_SIZE = new Vector2(36, 32); //18, 16
@@ -71,7 +71,7 @@ namespace MonoGameWindowsStarter
             state.Update(this, gameTime, platforms);
             if(state != temp)
             {
-                state.Entry(GameTime gameTime);
+                state.Entry(gameTime);
             }
             
             //Console.WriteLine(state);

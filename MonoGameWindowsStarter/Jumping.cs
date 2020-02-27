@@ -13,13 +13,15 @@ namespace MonoGameWindowsStarter
 {
     public class Jumping : PlayerState
     {
+        static double JUMP_TIME = 200;
+        static int SPEEDCAP = 20;
+
         bool hold = true;
         TimeSpan timer = new TimeSpan(0);
         public void Entry(GameTime gameTime)
         {
             hold = true;
-            timer = new TimeSpan(0, 0, 0, 0, );
-            //p.velocity.Y -= 20;
+            timer = new TimeSpan(0, 0, 0, 0, (int)gameTime.TotalGameTime.TotalMilliseconds);
         }
 
         public void Update(Player p, GameTime gameTime, BoundingRectangle[] platforms)
@@ -37,8 +39,9 @@ namespace MonoGameWindowsStarter
                     p.velocity.X -= Player.ACCELERATION * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 }
             }
-
-            if (hold)
+            Console.WriteLine(timer.TotalMilliseconds);
+            Console.WriteLine(timer.TotalMilliseconds);
+            if (hold && gameTime.TotalGameTime.TotalMilliseconds < timer.TotalMilliseconds + JUMP_TIME && p.velocity.Y < SPEEDCAP)
             {
                 p.bounds.Y -= 1;
                 p.velocity.Y -= Player.JUMP_ACCELERATION * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -149,11 +152,27 @@ namespace MonoGameWindowsStarter
         {
             foreach (BoundingRectangle plat in platforms)
             {
-                if (p.bounds.CollidesWith(plat))
+                BoxSideHit side = p.bounds.CollidesWith(plat);
+                if (side == BoxSideHit.Top)
                 {
                     p.bounds.Y = plat.Y - p.bounds.Height;
                     p.state = (PlayerState)Player.walkState;
                     p.velocity.Y = 0;
+                }
+                else if (side == BoxSideHit.Right)
+                {
+                    p.bounds.X = plat.X + plat.Width;
+                    p.velocity.X = 0;
+                }
+                else if (side == BoxSideHit.Bottom)
+                {
+                    p.bounds.Y = plat.Y + plat.Height;
+                    p.velocity.Y = 0;
+                }
+                else if (side == BoxSideHit.Left)
+                {
+                    p.bounds.X = plat.X - p.bounds.Width;
+                    p.velocity.X = 0;
                 }
             }
         }

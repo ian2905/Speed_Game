@@ -65,7 +65,7 @@ namespace MonoGameWindowsStarter
             spriteFont = Content.Load<SpriteFont>("Font");
             spriteSheet = new SpriteSheet(Content.Load<Texture2D>("spritesheet"), 21, 21, 2, 2);
             
-            player = new Player(graphics, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight/2 + 21));
+            player = new Player(this, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight/2 + 21));
             player.LoadContent(spriteSheet);
 
             platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(150, 100)));
