@@ -39,6 +39,8 @@ namespace MonoGameWindowsStarter
             // TODO: Add your initialization logic here
             graphics.PreferredBackBufferWidth = 1042;
             graphics.PreferredBackBufferHeight = 768;
+            graphics.ApplyChanges();
+
 
             random = new Random();
             platforms = new List<Platform>();
@@ -58,16 +60,22 @@ namespace MonoGameWindowsStarter
             VisualDebugging.LoadContent(Content);
 #endif
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(graphics.GraphicsDevice);
 
             spriteFont = Content.Load<SpriteFont>("Font");
             spriteSheet = new SpriteSheet(Content.Load<Texture2D>("spritesheet"), 21, 21, 2, 2);
             
-            player = new Player(this, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight/2 + 21));
+            player = new Player(graphics, new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight/2 + 21));
             player.LoadContent(spriteSheet);
 
-            platforms.Add(new Platform(this, Orentation.Flat, 5, new Vector2(100, 100)));
-            foreach(Platform platform in platforms)
+            platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(150, 100)));
+            platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(300, 200)));
+            platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(450, 300)));
+            platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(600, 400)));
+            platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(750, 500)));
+            platforms.Add(new Platform(Orentation.Flat, 5, new Vector2(900, 600)));
+            platforms.Add(new Platform(Orentation.Flat, (graphics.PreferredBackBufferWidth/Platform.BLOCK_SIZE) + Platform.BLOCK_SIZE, new Vector2(0, graphics.PreferredBackBufferHeight - Platform.BLOCK_SIZE)));
+            foreach (Platform platform in platforms)
             {
                 platform.LoadContent(spriteSheet);
             }
@@ -127,6 +135,8 @@ namespace MonoGameWindowsStarter
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+
+            
             player.Draw(spriteBatch);
             foreach(Platform platform in platforms)
             {

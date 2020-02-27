@@ -14,6 +14,8 @@ namespace MonoGameWindowsStarter
         void Update(Player player, GameTime gameTime, BoundingRectangle[] platforms);
         void Draw(Player p, SpriteBatch spriteBatch);
 
+        void Entry(GameTime gameTime);
+
 
 
 

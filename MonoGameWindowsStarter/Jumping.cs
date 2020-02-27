@@ -13,6 +13,15 @@ namespace MonoGameWindowsStarter
 {
     public class Jumping : PlayerState
     {
+        bool hold = true;
+        TimeSpan timer = new TimeSpan(0);
+        public void Entry(GameTime gameTime)
+        {
+            hold = true;
+            timer = new TimeSpan(0, 0, 0, 0, );
+            //p.velocity.Y -= 20;
+        }
+
         public void Update(Player p, GameTime gameTime, BoundingRectangle[] platforms)
         {
             var keyboardState = Keyboard.GetState();
@@ -29,6 +38,17 @@ namespace MonoGameWindowsStarter
                 }
             }
 
+            if (hold)
+            {
+                p.bounds.Y -= 1;
+                p.velocity.Y -= Player.JUMP_ACCELERATION * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (!keyboardState.IsKeyDown(Keys.W))
+                {
+                    hold = false;
+                }
+            }
+
+
             if (keyboardState.IsKeyDown(Keys.S))
             {
                 p.sliding = true;
@@ -39,6 +59,14 @@ namespace MonoGameWindowsStarter
             }
 
             p.velocity.Y += Player.GRAVITY;
+            if (p.velocity.X > 0)
+            {
+                p.velocity.X -= Player.FRICTION;
+            }
+            if (p.velocity.X < 0)
+            {
+                p.velocity.X += Player.FRICTION;
+            }
 
             //Player Restrictions
             if (p.bounds.X < 0)
@@ -46,20 +74,20 @@ namespace MonoGameWindowsStarter
                 p.velocity.X = 0;
                 p.bounds.X = 0;
             }
-            if (p.bounds.X > p.game.GraphicsDevice.Viewport.Width - p.bounds.Width)
+            if (p.bounds.X >  p.game.GraphicsDevice.Viewport.Width - p.bounds.Width)
             {
                 p.velocity.X = 0;
-                p.bounds.X = p.game.GraphicsDevice.Viewport.Width - p.bounds.Width;
+                p.bounds.X =  p.game.GraphicsDevice.Viewport.Width - p.bounds.Width;
             }
             if (p.bounds.Y < 0)
             {
                 p.velocity.Y = 0;
                 p.bounds.Y = 0;
             }
-            if (p.bounds.Y > p.game.GraphicsDevice.Viewport.Height - p.bounds.Height)
+            if (p.bounds.Y >  p.game.GraphicsDevice.Viewport.Height - p.bounds.Height)
             {
                 p.velocity.Y = 0;
-                p.bounds.Y = p.game.GraphicsDevice.Viewport.Height - p.bounds.Height;
+                p.bounds.Y =  p.game.GraphicsDevice.Viewport.Height - p.bounds.Height;
             }
 
             if (Math.Abs(p.velocity.X) > Math.Abs(p.velocity.Y))
@@ -105,15 +133,15 @@ namespace MonoGameWindowsStarter
 
             if (p.sliding)
             {
-                p.frames[3].Draw(spriteBatch, p.slidingDraw, Color.White, 0, p.velocity, s, 0);
+                p.frames[3].Draw(spriteBatch, p.slidingDraw, Color.White, 0, new Vector2(p.bounds.X, p.bounds.Y), s, 0);
             }
             else if (p.velocity.Y < 0)
             {
-                p.frames[7].Draw(spriteBatch, p.walkingDraw, Color.White, 0, p.velocity, s, 0);
+                p.frames[7].Draw(spriteBatch, p.walkingDraw, Color.White, 0, new Vector2(p.bounds.X, p.bounds.Y), s, 0);
             }
             else
             {
-                p.frames[4].Draw(spriteBatch, p.walkingDraw, Color.White, 0, p.velocity, s, 0);
+                p.frames[4].Draw(spriteBatch, p.walkingDraw, Color.White, 0, new Vector2(p.bounds.X, p.bounds.Y), s, 0);
             }
         }
 
@@ -125,6 +153,7 @@ namespace MonoGameWindowsStarter
                 {
                     p.bounds.Y = plat.Y - p.bounds.Height;
                     p.state = (PlayerState)Player.walkState;
+                    p.velocity.Y = 0;
                 }
             }
         }

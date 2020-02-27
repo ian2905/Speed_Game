@@ -108,5 +108,11 @@ namespace MonoGameWindowsStarter
         {
             return texture;
         }
+
+        public void sourceOffset(Vector2 offset)
+        {
+            source.X += (int)offset.X;
+            source.Y += (int)offset.Y;
+        }
     }
 }
